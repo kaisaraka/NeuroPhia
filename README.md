@@ -4,7 +4,7 @@
 
 ---
 
-##  Key Features
+## Key Features
 * **Real-time Biofeedback:** Visualizes Center of Pressure (CoP) and weight distribution with ultra-low latency (<50ms) via WebSockets.
 * **AI Clinical Analysis:** Integrated **Google Gemini LLM** generates instant, professional medical reports based on session metrics.
 * **Tremor Filtering:** Custom DSP algorithms (Exponential Moving Average) isolate pathological tremor frequencies.

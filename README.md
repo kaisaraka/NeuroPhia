@@ -1,45 +1,113 @@
-1. Backend Logic (backend/main.py)
-The core of the system is built on FastAPI for asynchronous data handling. Key modules include:
+# NeuroPhia: AI-Powered Post-Stroke Rehabilitation Platform
 
-A. Hardware Communication Layer
-The system reads raw data from the microcontroller via Serial (USB) at 115200 baud.
-background_reader(): A dedicated daemon thread that continuously polls the serial port. It prevents the main server thread from blocking during I/O operations.
-Signal Processing:
-Exponential Moving Average (EMA): Applied to raw load cell data to filter out high-frequency noise and micro-tremors (SMOOTH_FACTOR = 0.6).
-Tare Function: calibrate_sensor() captures the current load as a zero-reference offset vector.
-B. Center of Pressure (CoP) Calculation
-The core biomechanical metric is derived from the 4-quadrant weight distribution:
+![Project Status](https://img.shields.io/badge/Status-Prototype-green)
+![Tech Stack](https://img.shields.io/badge/Stack-Python%20|%20React%20|%20FastAPI-blue)
+![AI](https://img.shields.io/badge/AI-Google%20Gemini%20LLM-orange)
 
-Python
-# Simplified Logic
-CoP_X = ((Right_Sensors) - (Left_Sensors)) / Total_Weight
-CoP_Y = ((Front_Sensors) - (Back_Sensors)) / Total_Weight
-Normalization: Coordinates are clamped between -1.0 and 1.0 for UI rendering.
-Stability Index: Calculated as the Euclidean distance from the center (0,0). If distance < 0.2, the state is classified as GREEN (Stable).
-C. AI Integration (Google Gemini)
-Model: gemini-flash-latest (optimized for low latency).
-Prompt Engineering: The system constructs a dynamic prompt containing the patient's session metrics (Weight, Stability %, Duration).
-The AI acts as a "Rehabilitation Doctor" strictly outputting clinical recommendations without conversational filler.
-2. Frontend Logic (frontend/src/App.tsx)
-The interface is built with React and TypeScript, focusing on real-time visual feedback.
+**NeuroPhia** is an affordable, high-tech telerehabilitation platform designed to restore balance and coordination in post-stroke patients. It combines custom hardware (dual-plate stabilometric platform) with AI-driven software to provide real-time biofeedback and clinical analysis.
 
-A. Real-Time Data Visualization
-WebSockets (useSensors.ts): Instead of HTTP polling, the app maintains a persistent WebSocket connection (ws://localhost:8000/ws). This ensures <50ms latency for the biofeedback loop, which is critical for motor learning.
-CoPVisualizer Component: Renders the patient's center of gravity as a moving cursor on a 2D plane. It uses CSS transforms for hardware-accelerated animations (60 FPS).
-B. State Management
-Session Lifecycle: The app manages distinct states: CALIBRATION -> TRAINING -> RESULTS.
-Authentication: Implements OAuth2 workflow. User tokens are stored in localStorage for persistent sessions.
-C. Analytics
-Recharts Library: Used to plot the "Stability Trend" graph, visualizing the patient's progress over multiple sessions.
-3. Data Flow Diagram
-Фрагмент кода
-graph TD
-    A[Patient] -->|Stands on Platform| B(Load Cells)
-    B -->|Analog Signal| C(HX711 Amplifier)
-    C -->|Digital Data| D(Arduino/ESP32)
-    D -->|JSON over Serial| E[Python Backend]
-    E -->|Smoothing & CoP Calc| E
-    E -->|WebSocket Stream| F[React Frontend]
-    E -->|Session Data| G[Google Gemini AI]
-    G -->|Clinical Report| F
-    F -->|Visual Biofeedback| A
+---
+
+## 🚀 Key Features
+
+* **Real-time Biofeedback:** Visualizes Center of Pressure (CoP) and weight distribution with ultra-low latency via WebSockets.
+* **AI Clinical Analysis:** Integrated **Google Gemini LLM** generates instant, professional medical reports based on session data.
+* **Tremor Filtering:** Custom algorithms isolate pathological tremor frequencies to provide accurate motor control data.
+* **Gamified Rehabilitation:** Interactive training modes (Quick Test, Standard, Endurance) to increase patient motivation.
+* **Cost-Effective:** Total prototype cost is under **$41**, serving as an accessible alternative to clinical systems like *Biodex Balance System SD* ($15,000+).
+
+---
+
+## 🔄 How It Works (User Journey)
+
+The rehabilitation process is designed to be simple and intuitive for the patient, following a 5-step cycle:
+
+### 1. Authorization
+The patient **Registers** or **Logs in** to their secure account. This ensures that all medical data and progress history are saved personally to their profile.
+
+### 2. Session Setup
+From the Dashboard, the patient clicks **"Start New Session"** and selects the duration:
+* **Quick Test (30s)** – Rapid stability check.
+* **Standard (60s)** – Normal training mode.
+* **Endurance (120s)** – Stamina and focus test.
+
+### 3. Active Rehabilitation
+The patient stands on the **NeuroPhia Platform**.
+* **Goal:** Keep the center of gravity (red dot) inside the green zone on the screen.
+* **Process:** The system provides real-time visual cues via WebSockets, training the patient's vestibular system to maintain balance.
+
+### 4. AI Biofeedback
+Immediately after the timer ends, the patient receives:
+* **Stability Score:** A percentage (0-100%) indicating how stable they were.
+* **AI Report:** A text analysis generated by **Google Gemini**, pointing out specific issues (e.g., *"You lean too much to the left"*) and giving instant advice.
+
+### 5. Long-term Monitoring & Insights
+At any time, the patient can access:
+* **Profile:** To view the history of all past sessions and stability graphs.
+* **AI Insights:** A special section where the AI analyzes the *entire history* to find trends (e.g., *"Your stability has improved by 15% this week"*) and adjust the rehabilitation plan.
+
+---
+
+## 🏗️ System Architecture & Code Documentation
+
+This document explains how NeuroPhia processes data from the sensors to the AI analysis.
+
+### 1. Backend Logic (`backend/main.py`)
+The backend is the "brain" of the system, built with **Python** and **FastAPI**. It works in three main steps:
+
+#### A. Reading Hardware Data
+* **Asynchronous Reading:** The system uses a background process (daemon thread) to read data from the USB port continuously. This prevents the server from freezing during heavy data loads.
+* **Noise Filtering:** We use an algorithm called **Exponential Moving Average (EMA)** to smooth out raw sensor data, removing electrical noise and micro-jitters.
+* **Calibration:** Automatically captures the zero-reference offset on startup.
+
+#### B. Calculating Balance (Center of Pressure)
+The system calculates the patient's Center of Pressure (CoP) using the 4 load cells.
+* **Formula:** Compares weight distribution (Right vs. Left, Front vs. Back).
+* **Normalization:** Values are converted to a `[-1.0, 1.0]` range to support patients of any weight.
+* **Stability Index:** Measures sway from the center. Distance < 0.2 is classified as "Stable".
+
+#### C. Artificial Intelligence (Google Gemini)
+* **Role:** Acts as a digital rehabilitation doctor.
+* **Process:** Aggregates session stats (Stability %, Duration) and sends them to the Gemini LLM.
+* **Output:** Generates a clinical text report with actionable recommendations.
+
+### 2. Frontend Logic (`frontend/src/App.tsx`)
+The interface is built with **React**, designed for instant biofeedback.
+
+#### A. Real-Time Visuals
+* **WebSockets:** Uses a persistent connection for **<50ms latency**, ensuring the screen reacts instantly to patient movement.
+* **Visualizer:** Renders the Center of Gravity cursor at 60 FPS using hardware acceleration.
+
+#### B. App States
+1. **Calibration:** Zeroing sensors.
+2. **Training:** Active recording.
+3. **Results:** AI analysis and charts.
+
+### 3. Firmware Logic (`firmware/`)
+* **Microcontroller:** ESP32 / Arduino.
+* **Sensors:** 4x Load Cells with HX711 amplifiers (24-bit precision).
+* **Protocol:** Streams JSON data packets (`{"tl": 10, "tr": 12...}`) via Serial at 115200 baud.
+
+---
+
+## 🛠️ Tech Stack & Hardware
+
+### Hardware Architecture
+* **Sensors:** 4x Load Cells (50kg each) in a full-bridge configuration.
+* **Amplifier:** HX711 (24-bit ADC) for precise weight measurement.
+* **Microcontroller:** Arduino / ESP32 (Serial communication).
+* **Frame:** Custom-designed 3D printed components and plywood base.
+
+### Software Architecture
+* **Backend:** Python (FastAPI), Google Generative AI (Gemini).
+* **Frontend:** React + TypeScript, Tailwind CSS, Recharts.
+* **Database:** SQLite.
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1. Clone the Repository
+```bash
+git clone [https://github.com/kaisaraka/NeuroPhia.git](https://github.com/kaisaraka/NeuroPhia.git)
+cd NeuroPhia

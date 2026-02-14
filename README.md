@@ -1,14 +1,10 @@
 # NeuroPhia: AI-Powered Post-Stroke Rehabilitation Platform
 
-![Project Status](https://img.shields.io/badge/Status-Prototype-green)
-![Tech Stack](https://img.shields.io/badge/Stack-Python%20|%20React%20|%20FastAPI-blue)
-![AI](https://img.shields.io/badge/AI-Google%20Gemini%20LLM-orange)
-
 **NeuroPhia** is an affordable, high-tech telerehabilitation platform designed to restore balance and coordination in post-stroke patients. It combines custom hardware (dual-plate stabilometric platform) with AI-driven software to provide real-time biofeedback and clinical analysis.
 
 ---
 
-## 🚀 Key Features
+## Key Features
 
 * **Real-time Biofeedback:** Visualizes Center of Pressure (CoP) and weight distribution with ultra-low latency via WebSockets.
 * **AI Clinical Analysis:** Integrated **Google Gemini LLM** generates instant, professional medical reports based on session data.
@@ -18,7 +14,7 @@
 
 ---
 
-## 🔄 How It Works (User Journey)
+## How It Works (User Journey)
 
 The rehabilitation process is designed to be simple and intuitive for the patient, following a 5-step cycle:
 
@@ -48,7 +44,7 @@ At any time, the patient can access:
 
 ---
 
-## 🏗️ System Architecture & Code Documentation
+## System Architecture & Code Documentation
 
 This document explains how NeuroPhia processes data from the sensors to the AI analysis.
 
@@ -90,7 +86,7 @@ The interface is built with **React**, designed for instant biofeedback.
 
 ---
 
-## 🛠️ Tech Stack & Hardware
+## Tech Stack & Hardware
 
 ### Hardware Architecture
 * **Sensors:** 4x Load Cells (50kg each) in a full-bridge configuration.
@@ -105,7 +101,7 @@ The interface is built with **React**, designed for instant biofeedback.
 
 ---
 
-## ⚙️ Installation & Setup
+## Installation & Setup
 
 ### 1. Clone the Repository
 ```bash

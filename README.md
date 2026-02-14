@@ -1,14 +1,10 @@
 # NeuroPhia: AI-Powered Post-Stroke Rehabilitation Platform
 
-![Project Status](https://img.shields.io/badge/Status-Prototype-green)
-![Tech Stack](https://img.shields.io/badge/Stack-Python%20|%20React%20|%20FastAPI-blue)
-![AI](https://img.shields.io/badge/AI-Google%20Gemini%20LLM-orange)
-
 **NeuroPhia** is an affordable, high-tech telerehabilitation platform designed to restore balance and coordination in post-stroke patients. It combines custom hardware (dual-plate stabilometric platform) with AI-driven software to provide real-time biofeedback and clinical analysis.
 
 ---
 
-## 🚀 Key Features
+## Key Features
 * **Real-time Biofeedback:** Visualizes Center of Pressure (CoP) and weight distribution with ultra-low latency (<50ms) via WebSockets.
 * **AI Clinical Analysis:** Integrated **Google Gemini LLM** generates instant, professional medical reports based on session metrics.
 * **Tremor Filtering:** Custom DSP algorithms (Exponential Moving Average) isolate pathological tremor frequencies.
@@ -17,13 +13,13 @@
 
 ---
 
-## 🔄 How It Works (User Journey)
+##  How It Works (User Journey)
 *(Этот раздел оставляем без изменений, он у тебя уже есть)*
 ...
 
 ---
 
-## 🏗️ Deep Technical Architecture
+##  Deep Technical Architecture
 
 This project implements a decoupled **Client-Server architecture** utilizing asynchronous I/O for high-performance data streaming.
 
@@ -81,19 +77,26 @@ This project implements a decoupled **Client-Server architecture** utilizing asy
 ```bash
 git clone [https://github.com/kaisaraka/NeuroPhia.git](https://github.com/kaisaraka/NeuroPhia.git)
 cd NeuroPhia
+```
 2. Backend Setup
 Create a .env file in the backend folder and add your API keys:
+```bash
 GEMINI_API_KEY="your_google_api_key"
 SECRET_KEY="your_secret_key"
+```
 Install dependencies and run the server:
+```bash
 cd backend
 pip install -r requirements.txt
 python main.py
+```
 3. Frontend Setup
+```bash
 cd frontend
 npm install
 npm run dev
-4. Firmware Setup (Arduino/ESP32)
+```
+5. Firmware Setup (Arduino/ESP32)
 To flash the microcontroller, you need the Arduino IDE with the following library installed:
 HX711 by Bogdan Necula (v0.7.5 or newer)
 Steps:
